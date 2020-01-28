@@ -3,12 +3,13 @@ import numpy as np
 
 def _linear_filter(b, a, x, axis=-1, zi=None):
     '''
-    Assume zi is none, all pole filter (b = [1]), and a[0] = 1
+    Assume zi is none and a[0] = 1
+    TODO: Add normalization
     '''
     y = np.ones(x.shape)
     
     l = a.shape[0] - 1 # largest index in a
-    j = b.shape[0] - 1
+    j = b.shape[0] - 1 # largest index in b
 
     for m, n in enumerate(range(len(x))): # len(x) on the correct axis
         
@@ -31,6 +32,7 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
             
     return y
 
+#b = np.asarray([1])
 b = np.asarray([1, 0.25])
 a = np.asarray([1, 0.5, 0.25])
 x = np.asarray([1,2,3,4,5])
