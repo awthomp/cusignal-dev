@@ -16,8 +16,8 @@ import numpy as np
 
 def _linear_filter(b, a, x, axis=-1, zi=None):
     '''
-    Assume zi is none and a[0] = 1
-    TODO: Add normalization
+    DF-2 Linear Filter
+    TODO: Expand documentation and ensure complex filtering works
     '''
     y = np.ones(x.shape)
     
@@ -28,11 +28,11 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
         
         nn = l < n and l or n
                 
-        y[n] = x[n]
+        y[n] = x[n]/a[0]
         
         count = nn - 1
         for k in range(1, nn+1):
-            y[n] -= a[nn - count]*y[n-k]
+            y[n] -= (a[nn - count]*y[n-k])/a[0]
             count -= 1
 
         nn = j < n and j or n
@@ -40,7 +40,7 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
         if j > 0:
             count = nn - 1
             for k in range(1, nn+1):
-                y[n] += b[nn - count]*x[n-k]
+                y[n] += (b[nn - count]*x[n-k])/a[0]
                 count -= 1
             
     return y
