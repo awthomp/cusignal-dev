@@ -28,7 +28,7 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
         
         nn = l < n and l or n
                 
-        y[n] = x[n]/a[0]
+        y[n] = (b[0]*x[n])/a[0]
         
         count = nn - 1
         for k in range(1, nn+1):
