@@ -24,23 +24,23 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
     l = a.shape[0] - 1 # largest index in a
     j = b.shape[0] - 1 # largest index in b
 
-    for m, n in enumerate(range(len(x))): # len(x) on the correct axis
+    for n in range(len(x)): # len(x) on the correct axis
         
-        mm = l < m and l or m
+        nn = l < n and l or n
                 
-        y[m] = x[m]
+        y[n] = x[n]
         
-        count = mm - 1
-        for k in range(1, mm+1):
-            y[n] -= a[mm - count]*y[m-k]
+        count = nn - 1
+        for k in range(1, nn+1):
+            y[n] -= a[nn - count]*y[n-k]
             count -= 1
 
-        mm = j < m and j or m
+        nn = j < n and j or n
 
         if j > 0:
-            count = mm - 1
-            for k in range(1, mm+1):
-                y[n] += b[mm - count]*x[m-k]
+            count = nn - 1
+            for k in range(1, nn+1):
+                y[n] += b[nn - count]*x[n-k]
                 count -= 1
             
     return y
