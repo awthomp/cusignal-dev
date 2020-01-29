@@ -44,11 +44,3 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
                 count -= 1
             
     return y
-
-#b = np.asarray([1])
-b = np.asarray([1, 0.25])
-a = np.asarray([1, 0.5, 0.25])
-x = np.asarray([1,2,3,4,5])
-y = _linear_filter(b,a,x)
-
-print(y)

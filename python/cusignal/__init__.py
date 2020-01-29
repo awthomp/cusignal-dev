@@ -19,6 +19,7 @@ from cusignal.signaltools import (
     wiener,
     convolve2d,
     correlate2d,
+    lfilter,
     lfiltic,
     hilbert,
     hilbert2,

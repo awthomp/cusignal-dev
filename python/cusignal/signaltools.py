@@ -31,6 +31,7 @@ from .windows import get_window
 from .fftpack_helper import _init_nd_shape_and_axes_sorted, next_fast_len
 from ._upfirdn import upfirdn, _output_len
 from .fir_filter_design import firwin
+from ._lfilter import _linear_filter
 
 _modedict = {'valid': 0, 'same': 1, 'full': 2}
 
@@ -947,6 +948,10 @@ def correlate2d(in1, in2, mode='full', boundary='fill', fillvalue=0):
         out = out[::-1, ::-1]
 
     return out
+
+
+def lfilter(b, a, x, axis=-1, zi=None):
+    _linear_filter(b, a, x, axis=axis, zi=zi)
 
 
 def lfiltic(b, a, y, x=None):
