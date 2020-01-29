@@ -19,8 +19,11 @@ def _linear_filter(b, a, x, axis=-1, zi=None):
     DF-2 Linear Filter
     TODO: Expand documentation and ensure complex filtering works
     '''
-    y = np.ones(x.shape)
-    
+    if b.dtype == complex or a.dtype == complex or x.dtype == complex:
+        y = np.ones(x.shape) + 1j*np.zeros(x.shape)
+    else:
+        y = np.ones(x.shape)
+
     l = a.shape[0] - 1 # largest index in a
     j = b.shape[0] - 1 # largest index in b
 
