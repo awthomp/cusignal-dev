@@ -13,16 +13,44 @@
 
 from scipy import signal
 import numpy as np
+from numba import cuda
 
-def _linear_filter(b, a, x, axis=-1, zi=None):
+@cuda.jit(fastmath=True)
+def _linear_filter(b, a, x, y):
+
+    X = cuda.grid(1)
+    strideX = cuda.gridsize(1)
+
+    l = a.shape[0] - 1 # largest index in a
+    j = b.shape[0] - 1 # largest index in b
+
+    for n in range(X, y.shape[0], strideX):
+              
+        nn = l < n and l or n
+                
+        y[n] = (b[0]*x[n])/a[0]
+        
+        count = nn - 1
+        for k in range(1, nn+1):
+            y[n] -= (a[nn - count]*y[n-k])/a[0]
+            count -= 1
+
+        nn = j < n and j or n
+
+        if j > 0:
+            count = nn - 1
+            for k in range(1, nn+1):
+                y[n] += (b[nn - count]*x[n-k])/a[0]
+                count -= 1
+                
+
+## Mark for deletion
+def _linear_filter_python(b, a, x, y, axis=-1, zi=None):
+
     '''
-    DF-2 Linear Filter
-    TODO: Expand documentation and ensure complex filtering works
+    #DF-2 Linear Filter
+    #TODO: Expand documentation and ensure complex filtering works
     '''
-    if b.dtype == complex or a.dtype == complex or x.dtype == complex:
-        y = np.ones(x.shape) + 1j*np.zeros(x.shape)
-    else:
-        y = np.ones(x.shape)
 
     l = a.shape[0] - 1 # largest index in a
     j = b.shape[0] - 1 # largest index in b

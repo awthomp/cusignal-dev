@@ -20,6 +20,7 @@ from cusignal.signaltools import (
     convolve2d,
     correlate2d,
     lfilter,
+    lfilter_python,
     lfiltic,
     hilbert,
     hilbert2,

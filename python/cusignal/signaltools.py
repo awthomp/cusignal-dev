@@ -31,7 +31,7 @@ from .windows import get_window
 from .fftpack_helper import _init_nd_shape_and_axes_sorted, next_fast_len
 from ._upfirdn import upfirdn, _output_len
 from .fir_filter_design import firwin
-from ._lfilter import _linear_filter
+from ._lfilter import _linear_filter, _linear_filter_python
 
 _modedict = {'valid': 0, 'same': 1, 'full': 2}
 
@@ -951,8 +951,33 @@ def correlate2d(in1, in2, mode='full', boundary='fill', fillvalue=0):
 
 
 def lfilter(b, a, x, axis=-1, zi=None):
-    y = _linear_filter(b, a, x, axis=axis, zi=zi)
-    
+    b = asarray(b)
+    a = asarray(a)
+    x = asarray(x)
+
+    if b.dtype == complex or a.dtype == complex or x.dtype == complex:
+        y = cp.ones(x.shape) + 1j*cp.zeros(x.shape)
+    else:
+        y = cp.ones(x.shape)
+
+    # get this from Numba -- currently done w/ cupy
+    numSM = 56
+    threadsperblock = (256)
+    blockspergrid = (numSM * 10)
+    # doesn't currently do anything with zi or axis
+    _linear_filter[blockspergrid, threadsperblock](b, a, x, y)
+
+    return y
+
+
+def lfilter_python(b, a, x, axis=-1, zi=None):
+    if b.dtype == complex or a.dtype == complex or x.dtype == complex:
+        y = np.ones(x.shape) + 1j*np.zeros(x.shape)
+    else:
+        y = np.ones(x.shape)
+
+    y = _linear_filter_python(b, a, x, y)
+
     return y
 
 
