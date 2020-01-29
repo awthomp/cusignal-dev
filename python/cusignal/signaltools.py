@@ -960,8 +960,8 @@ def lfilter(b, a, x, axis=-1, zi=None):
     else:
         y = cp.ones(x.shape)
 
-    # get this from Numba -- currently done w/ cupy
-    numSM = 56
+    d = cp.cuda.device.Device(0)
+    numSM = d.attributes['MultiProcessorCount']
     threadsperblock = (256)
     blockspergrid = (numSM * 10)
     # doesn't currently do anything with zi or axis
