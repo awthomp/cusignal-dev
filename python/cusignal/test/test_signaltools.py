@@ -168,3 +168,24 @@ def test_correlate2d(num_samps, num_taps, boundary, mode):
         cusignal.correlate2d(gpu_sig, gpu_filt, boundary=boundary, mode=mode)
     )
     assert array_equal(cpu_correlate2d, gpu_correlate2d)
+
+# Currently pure python to check correct implementation and build out GPU support
+@pytest.mark.parametrize('order', [4, 16, 32])
+@pytest.mark.parametrize('num_samps_x', [2**5, 2**10, 2**12, 2**15])
+@pytest.mark.parametrize('mode', ['real'])
+def test_lfilter(order, num_samps_x, mode):
+    if mode == 'real':
+        cpu_b, cpu_a = signal.butter(order, 0.5)
+        #gpu_b = cp.asarray(cpu_b)
+        #gpu_a = cp.asarray(cpu_a)
+        cpu_x = np.random.randn(num_samps_x)
+        #gpu_x = cp.asarray(cpu_x)
+
+    cpu_lfilter = signal.lfilter(cpu_b, cpu_a, cpu_x)
+    gpu_lfilter = cusignal.lfilter(cpu_b, cpu_a, cpu_x)
+
+    #lfilter sometimes returns NaNs for ill-formed sizes, so remove
+    cpu_lfilter = cpu_lfilter[~np.isnan(cpu_lfilter)]
+    gpu_lfilter = gpu_lfilter[~np.isnan(cpu_lfilter)]
+
+    assert array_equal(cpu_lfilter, gpu_lfilter)

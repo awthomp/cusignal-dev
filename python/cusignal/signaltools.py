@@ -951,7 +951,9 @@ def correlate2d(in1, in2, mode='full', boundary='fill', fillvalue=0):
 
 
 def lfilter(b, a, x, axis=-1, zi=None):
-    _linear_filter(b, a, x, axis=axis, zi=zi)
+    y = _linear_filter(b, a, x, axis=axis, zi=zi)
+    
+    return y
 
 
 def lfiltic(b, a, y, x=None):
