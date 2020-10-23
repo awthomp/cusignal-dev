@@ -2,7 +2,7 @@
 
 ## New Features
 - PR #241 - Add inverse_complex_cepstrum and minimum_phase to acoustics module
-
+- PR #270 - Higher order convolution support
 
 ## Improvements
 - PR #267 Various optimization across all functions
